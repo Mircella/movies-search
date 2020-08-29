@@ -3,8 +3,10 @@ package com.mircella.movies;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @AllArgsConstructor
-enum Genre {
+public enum Genre {
     ADVENTURE("Adventure"),
     ACTION("Action"),
     SCI_FI("Sci-Fi"),
@@ -18,8 +20,13 @@ enum Genre {
     SPORT("Sport"),
     CRIME("Crime"),
     ANIMATION("Animation"),
-    BIOGRAPHY("Biography");
+    BIOGRAPHY("Biography"),
+    DEFAULT("");
 
     @Getter
     private final String value;
+
+    public static Genre of(String value) {
+        return Arrays.stream(Genre.values()).filter(it -> it.value.equals(value)).findAny().orElse(DEFAULT);
+    }
 }
