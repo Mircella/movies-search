@@ -21,5 +21,7 @@ public class ElasticSearchSettings {
     private int port;
     @NonNull
     private String scheme;
+    @NonNull
+    private String clusterName;
     private int timeout;
 }

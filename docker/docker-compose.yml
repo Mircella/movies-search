@@ -1,40 +1,51 @@
 version: '2.2'
 services:
-  elasticsearch_1:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-    container_name: elasticsearch
-    environment:
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - 9200:9200
-      - 9300:9300
-    networks:
-      - movies
-  elasticsearch_2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-    container_name: elasticsearch2
-    environment:
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.zen.ping.unicast.hosts=elasticsearchsample"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    networks:
-      - movies
-  kibanasample:
-    image: docker.elastic.co/kibana/kibana:6.5.4
-    environment:
-      - "ELASTICSEARCH_HOSTS=http://elasticsearch:9200"
-    ports:
-      - 5601:5601
-    networks:
-      - movies
-    depends_on:
-      - elasticsearch_1
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
+        container_name: elasticsearch
+        environment:
+        - node.name=elasticsearch
+        - discovery.seed_hosts=elasticsearch_2
+        - cluster.initial_master_nodes=elasticsearch,elasticsearch_2
+        - cluster.name=movies
+        - bootstrap.memory_lock=true
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        ports:
+        - 9200:9200
+        - 9300:9300
+        networks:
+        - elastic
+    elasticsearch_2:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
+        container_name: elasticsearch_2
+        environment:
+        - node.name=elasticsearch_2
+        - discovery.seed_hosts=elasticsearch
+        - cluster.initial_master_nodes=elasticsearch,elasticsearch_2
+        - cluster.name=movies
+        - bootstrap.memory_lock=true
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#        - "discovery.zen.ping.unicast.hosts=elasticsearch"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        networks:
+        - elastic
+    kibana:
+        image: docker.elastic.co/kibana/kibana:7.9.0
+        environment:
+        - cluster.name=movies
+        - "ELASTICSEARCH_HOSTS=http://elasticsearch:9200"
+        ports:
+        - 5601:5601
+        networks:
+        - elastic
+        depends_on:
+        - elasticsearch
 networks:
-  movies:
+    elastic:

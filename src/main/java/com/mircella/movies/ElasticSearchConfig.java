@@ -1,5 +1,6 @@
 package com.mircella.movies;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.elasticsearch.client.RestClient;
@@ -9,13 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@RequiredArgsConstructor
 class ElasticSearchConfig {
 
     private final ElasticSearchSettings settings;
-
-    ElasticSearchConfig(ElasticSearchSettings settings) {
-        this.settings = settings;
-    }
 
     @Bean
     public RestHighLevelClient restHighLevelClient() {
