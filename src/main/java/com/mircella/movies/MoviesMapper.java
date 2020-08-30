@@ -1,12 +1,10 @@
 package com.mircella.movies;
 
 import com.neovisionaries.i18n.CountryCode;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -14,21 +12,49 @@ import java.util.stream.Collectors;
 @Component
 public class MoviesMapper {
 
-    public List<ESMovie> mapToESMovie(List<Movie> movies) {
-        return movies.stream().map(it -> new ESMovie(
+    public List<ESMovie> mapToESMovies(List<Movie> movies) {
+        return movies.stream().map(this::mapToESMovies).collect(Collectors.toList());
+    }
+
+    private ESMovie mapToESMovies(Movie it) {
+        return new ESMovie(
                 UUID.randomUUID(),
                 it.title(),
                 it.year(),
                 it.released(),
                 extractRuntime(it.runtime()),
-                Arrays.stream(it.genre().split("[,| ]")).map(Genre::of).collect(Collectors.toSet()),
-                Arrays.asList(it.director().split("[,| ]")),
-                Arrays.asList(it.actors().split("[,| ]")),
+                Arrays.stream(it.genre().split(", ")).map(Genre::of).collect(Collectors.toSet()),
+                Set.of(it.director().split(", ")),
+                Set.of(it.actors().split(", ")),
                 it.plot(),
-                it.language(),
-                CountryCode.getByAlpha2Code(it.country()),
+                Set.of(it.language().split(", ")),
+                mapToCountryCode(it.country()),
                 it.ratings()
-        )).collect(Collectors.toList());
+        );
+    }
+
+    private CountryCode mapToCountryCode(String countryName) {
+        return Optional.ofNullable(CountryCode.findByName(countryName)
+                .stream()
+                .findAny()
+                .orElseGet(() -> CountryCode.getByAlpha3Code(countryName)))
+                .orElse(CountryCode.UNDEFINED);
+    }
+
+    public MovieDetails mapToMovieDetails(ESMovie esMovie) {
+        return new MovieDetails(
+                esMovie.title(),
+                esMovie.year(),
+                esMovie.released(),
+                esMovie.runtime() + " minutes",
+                esMovie.genres(),
+                esMovie.directors(),
+                esMovie.actors(),
+                esMovie.plot(),
+                esMovie.languages(),
+                esMovie.country(),
+                esMovie.ratings()
+        );
     }
 
     private int extractRuntime(String runtime) {
@@ -42,5 +68,31 @@ public class MoviesMapper {
             }
         }
         return 0;
+    }
+
+    public MovieDetails toMovie(SearchHit<ESMovie> searchHit) {
+        try {
+            return mapToMovieDetails(searchHit.getContent());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ESMovie mapToESMovies(MovieDetails movieDetails) {
+        return new ESMovie(
+                UUID.randomUUID(),
+                movieDetails.title(),
+                movieDetails.year(),
+                movieDetails.released(),
+                extractRuntime(movieDetails.runtime()),
+                movieDetails.genres(),
+                movieDetails.directors(),
+                movieDetails.actors(),
+                movieDetails.plot(),
+                movieDetails.languages(),
+                movieDetails.country(),
+                movieDetails.ratings()
+        );
     }
 }

@@ -1,11 +1,10 @@
 package com.mircella.movies;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 public record Movie(String title,
                     int year,
@@ -18,7 +17,7 @@ public record Movie(String title,
                     String plot,
                     String language,
                     String country,
-                    List<Rating> ratings) {
+                    Set<Rating> ratings) {
 
     public Movie() {
         this(
@@ -32,7 +31,7 @@ public record Movie(String title,
                 null,
                 null,
                 null,
-                Collections.emptyList()
+                Collections.emptySet()
         );
     }
 }

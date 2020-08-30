@@ -33,11 +33,11 @@ public class MoviesRepository {
     }
 
 
-//    fun createFavoriteMovies(genre: String): List<Movie> {
+//    fun createFavoriteMovies(genres: String): List<Movie> {
 //        val MOVIES = MOVIES_DTOS.map {
-//            val favGenre = it.genre?.split(", ")?.toTypedArray()
+//            val favGenre = it.genres?.split(", ")?.toTypedArray()
 //            val suggest = Completion(favGenre)
-//            if (favGenre?.contains(genre) ?: false) {
+//            if (favGenre?.contains(genres) ?: false) {
 //                suggest.weight = 2
 //            } else {
 //                suggest.weight = 1
@@ -47,12 +47,12 @@ public class MoviesRepository {
 //                    it.year?.toInt(),
 //                    LocalDate.parse(it.released, DATE_FORMATTER),
 //                    it.runtime,
-//                    it.genre,
+//                    it.genres,
 //                    suggest,
-//                    it.director,
+//                    it.directors,
 //                    it.actors,
 //                    it.plot,
-//                    it.language,
+//                    it.languages,
 //                    it.country,
 //                    it.ratings?.map { Ratings(it.source, it.value) })
 //        }
