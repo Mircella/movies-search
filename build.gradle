@@ -21,12 +21,13 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 //    implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client'
 //    implementation 'org.elasticsearch.client:elasticsearch-rest-client'
 //    implementation 'org.elasticsearch:elasticsearch'
     implementation("io.springfox:springfox-swagger2:3.0.0")
     implementation("io.springfox:springfox-swagger-ui:3.0.0")
-
+    implementation('com.neovisionaries:nv-i18n:1.23')
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'

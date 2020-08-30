@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MoviesAdminController {
 
-    private final ElasticSearchIndexClient indexClient;
+    private final MoviesIndexOperations indexClient;
 
     @PostMapping("/admin/movies")
     public ResponseEntity<String> createMoviesIndex() {
@@ -22,12 +22,12 @@ public class MoviesAdminController {
     @DeleteMapping("/admin/movies")
     public ResponseEntity<String> deleteMoviesIndex() {
         indexClient.deleteMovieIndex();
-        return ResponseEntity.ok("Movies Index Created");
+        return ResponseEntity.ok("Movies Index Deleted");
     }
 
     @GetMapping("/admin/movies")
     public ResponseEntity<String> checkMoviesIndex() {
-        boolean exists = indexClient.indexExists();
+        boolean exists = indexClient.moviesIndexExists();
         if (exists) {
             return ResponseEntity.ok("Movies Index Exists");
         } else {
